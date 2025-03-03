@@ -10,17 +10,49 @@ namespace SecurityLibrary
     {
         public int Analyse(string plainText, string cipherText)
         {
-            throw new NotImplementedException();
+            for (int candidateKey = 2; candidateKey <= plainText.Length; candidateKey++)
+            {
+                string attempt = Encrypt(plainText, candidateKey);
+                if (attempt.Equals(cipherText))
+                    return candidateKey;
+            }
+            return 0;
         }
 
         public string Decrypt(string cipherText, int key)
         {
-            throw new NotImplementedException();
+            cipherText = cipherText.ToLower();
+            int length = cipherText.Length;
+            char[] plainChars = new char[length];
+
+            int currentPos = 0;
+            for (int i = 0; i < key; i++)
+            {
+                for (int j = i; j < length; j += key)
+                {
+                    plainChars[j] = cipherText[currentPos++];
+                }
+            }
+
+            return new string(plainChars);
         }
 
         public string Encrypt(string plainText, int key)
         {
-            throw new NotImplementedException();
+            
+            plainText = plainText.ToLower();
+
+            StringBuilder cipherBuilder = new StringBuilder();
+
+            for (int i = 0; i < key; i++)
+            {
+                for (int j = i; j < plainText.Length; j += key)
+                {
+                    cipherBuilder.Append(plainText[j]);
+                }
+            }
+
+            return cipherBuilder.ToString().ToUpper();
         }
     }
 }
