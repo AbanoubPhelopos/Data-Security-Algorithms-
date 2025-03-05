@@ -14,10 +14,11 @@ namespace SecurityLibrary
         public List<int> Analyse(List<int> plainText, List<int> cipherText)
         {
             //throw new NotImplementedException();
-           // List<int> key =new List<int>();
+            // List<int> key =new List<int>();
+            int det = (plainText[0] * plainText[3] - plainText[1] * plainText[2]) % 26;
             List<int> inverseplain = new List<int> {
 
-             plainText[0], plainText[1], plainText[2], plainText[3]
+             plainText[3]/det, -plainText[1]/det, -plainText[2]/det, plainText[0]
             
             };
             List<int> cipher = new List<int> {
@@ -25,8 +26,10 @@ namespace SecurityLibrary
              cipherText[0], cipherText[1], cipherText[2], cipherText[3]
 
             };
-            inverseplain = inverse2(inverseplain);
-           // int sum = 0;
+            Console.WriteLine("Inverse Matrix: " + string.Join(", ", inverseplain));
+            //inverseplain = inverse2(inverseplain);
+            Console.WriteLine("Inverse Matrix: " + string.Join(", ", inverseplain));
+            // int sum = 0;
             List<int> key = new List<int>
             {
                  (cipher[0] * inverseplain[0] + cipher[1] * inverseplain[2]) % 26,
@@ -34,11 +37,11 @@ namespace SecurityLibrary
                  (cipher[2] * inverseplain[0] + cipher[3] * inverseplain[2]) % 26,
                  (cipher[2] * inverseplain[1] + cipher[3] * inverseplain[3]) % 26
             };
-
-            if (key.Count != 4)
+            Console.WriteLine("Inverse Matrix: " + string.Join(", ", key));
+           /* if (key.Count != 4)
             {
                 throw new InvalidAnlysisException();
-            }
+            }*/
             return key;
         }
 
@@ -80,9 +83,9 @@ namespace SecurityLibrary
             List<int> keyinverse = new List<int>
             {
                (key[3] * inver) % 26,
-        (-key[1] * inver + 26) % 26,
-        (-key[2] * inver + 26) % 26,
-        (key[0] * inver) % 26
+               (-key[1] * inver + 26) % 26,
+               (-key[2] * inver + 26) % 26,
+               (key[0] * inver) % 26
              };
             return keyinverse;
         }
@@ -157,7 +160,35 @@ namespace SecurityLibrary
 
         public List<int> Analyse3By3Key(List<int> plainText, List<int> cipherText)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            List<int> inverseplainText =inverse3(plainText);
+            List<int> key = new List<int>(new int[9]);
+            Console.WriteLine("Inverse Matrix: " + string.Join(", ", inverseplainText));
+
+            //key= Decrypt(cipherText, plainText);
+            for (int row = 0; row < 3; row++)
+            {
+                for (int col = 0; col < 3; col++)
+                {
+                    int sum = 0;
+
+                    for (int k = 0; k < 3; k++)
+                    {
+                        int mul = inverseplainText[row * 3 + k] * cipherText[k * 3 + col];
+                        Console.WriteLine($"Multiplying: {inverseplainText[row * 3 + k]} * {cipherText[k * 3 + col]} = {mul}");
+                        sum += mul;
+                    }
+
+                    key[col * 3 + row] = (sum % 26);
+                    if (key[row * 3 + col] < 0)
+                        key[row * 3 + col] += 26;
+                    Console.WriteLine($"Before Modulo - Key[{row},{col}]: {sum}");
+                    Console.WriteLine($"After Modulo - Key[{row},{col}]: {key[row * 3 + col]}");
+                }
+            }
+          
+            Console.WriteLine("Inverse Matrix: " + string.Join(", ", key));
+            return key;
         }
 
     }
