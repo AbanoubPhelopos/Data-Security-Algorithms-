@@ -14,35 +14,29 @@ namespace SecurityLibrary
         public List<int> Analyse(List<int> plainText, List<int> cipherText)
         {
             //throw new NotImplementedException();
-            // List<int> key =new List<int>();
-            int det = (plainText[0] * plainText[3] - plainText[1] * plainText[2]) % 26;
-            List<int> inverseplain = new List<int> {
-
-             plainText[3]/det, -plainText[1]/det, -plainText[2]/det, plainText[0]
-            
-            };
-            List<int> cipher = new List<int> {
-
-             cipherText[0], cipherText[1], cipherText[2], cipherText[3]
-
-            };
-            Console.WriteLine("Inverse Matrix: " + string.Join(", ", inverseplain));
-            //inverseplain = inverse2(inverseplain);
-            Console.WriteLine("Inverse Matrix: " + string.Join(", ", inverseplain));
-            // int sum = 0;
-            List<int> key = new List<int>
+           
+            for (int fir = 0; fir < 26; fir++)
             {
-                 (cipher[0] * inverseplain[0] + cipher[1] * inverseplain[2]) % 26,
-                 (cipher[0] * inverseplain[1] + cipher[1] * inverseplain[3]) % 26,
-                 (cipher[2] * inverseplain[0] + cipher[3] * inverseplain[2]) % 26,
-                 (cipher[2] * inverseplain[1] + cipher[3] * inverseplain[3]) % 26
-            };
-            Console.WriteLine("Inverse Matrix: " + string.Join(", ", key));
-           /* if (key.Count != 4)
-            {
-                throw new InvalidAnlysisException();
-            }*/
-            return key;
+                for(int second = 0; second < 26; second++)
+                {
+                    for(int third = 0; third < 26; third++)
+                    {
+                        for(int fourth = 0; fourth < 26; fourth++)
+                        {
+                            List<int> key = new List<int>
+                            {
+                                fir, second, third,fourth
+                            };
+                            if (Enumerable.SequenceEqual(cipherText, Encrypt(plainText, key)))
+                            {
+                                return key;
+                            }
+                        }
+                    }
+                }
+            }
+            throw new InvalidAnlysisException();
+
         }
 
 
@@ -112,18 +106,18 @@ namespace SecurityLibrary
             }
             if (inver == -1) throw new InvalidAnlysisException();
             List<int> adj = new List<int>
-    {
-        ((Text[4] * Text[8] - Text[5] * Text[7]) % 26 + 26) % 26,
-        ((-1 * (Text[1] * Text[8] - Text[2] * Text[7])) % 26 + 26) % 26,
-        ((Text[1] * Text[5] - Text[2] * Text[4]) % 26 + 26) % 26,
-        ((-1 * (Text[3] * Text[8] - Text[5] * Text[6])) % 26 + 26) % 26,
-        ((Text[0] * Text[8] - Text[2] * Text[6]) % 26 + 26) % 26,
-        ((-1 * (Text[0] * Text[5] - Text[2] * Text[3])) % 26 + 26) % 26,
-        ((Text[3] * Text[7] - Text[4] * Text[6]) % 26 + 26) % 26,
-        ((-1 * (Text[0] * Text[7] - Text[1] * Text[6])) % 26 + 26) % 26,
-        ((Text[0] * Text[4] - Text[1] * Text[3]) % 26 + 26) % 26
+             {
+                ((Text[4] * Text[8] - Text[5] * Text[7]) % 26 + 26) % 26,
+                ((-1 * (Text[1] * Text[8] - Text[2] * Text[7])) % 26 + 26) % 26,
+                ((Text[1] * Text[5] - Text[2] * Text[4]) % 26 + 26) % 26,
+                ((-1 * (Text[3] * Text[8] - Text[5] * Text[6])) % 26 + 26) % 26,
+                ((Text[0] * Text[8] - Text[2] * Text[6]) % 26 + 26) % 26,
+                ((-1 * (Text[0] * Text[5] - Text[2] * Text[3])) % 26 + 26) % 26,
+                ((Text[3] * Text[7] - Text[4] * Text[6]) % 26 + 26) % 26,
+                ((-1 * (Text[0] * Text[7] - Text[1] * Text[6])) % 26 + 26) % 26,
+                ((Text[0] * Text[4] - Text[1] * Text[3]) % 26 + 26) % 26
 
-    };
+             };
             for (int i = 0; i < 9; i++)
             {
                 int x = (adj[i]*inver) % 26;
@@ -163,9 +157,9 @@ namespace SecurityLibrary
             //throw new NotImplementedException();
             List<int> inverseplainText =inverse3(plainText);
             List<int> key = new List<int>(new int[9]);
-            Console.WriteLine("Inverse Matrix: " + string.Join(", ", inverseplainText));
+           // Console.WriteLine("Inverse Matrix: " + string.Join(", ", inverseplainText));
 
-            //key= Decrypt(cipherText, plainText);
+          
             for (int row = 0; row < 3; row++)
             {
                 for (int col = 0; col < 3; col++)
@@ -175,19 +169,19 @@ namespace SecurityLibrary
                     for (int k = 0; k < 3; k++)
                     {
                         int mul = inverseplainText[row * 3 + k] * cipherText[k * 3 + col];
-                        Console.WriteLine($"Multiplying: {inverseplainText[row * 3 + k]} * {cipherText[k * 3 + col]} = {mul}");
+                       // Console.WriteLine($"Multiplying: {inverseplainText[row * 3 + k]} * {cipherText[k * 3 + col]} = {mul}");
                         sum += mul;
                     }
 
                     key[col * 3 + row] = (sum % 26);
                     if (key[row * 3 + col] < 0)
                         key[row * 3 + col] += 26;
-                    Console.WriteLine($"Before Modulo - Key[{row},{col}]: {sum}");
-                    Console.WriteLine($"After Modulo - Key[{row},{col}]: {key[row * 3 + col]}");
+                  //  Console.WriteLine($" Key[{row},{col}]: {sum}");
+                   // Console.WriteLine($" Key[{row},{col}]: {key[row * 3 + col]}");
                 }
             }
           
-            Console.WriteLine("Inverse Matrix: " + string.Join(", ", key));
+           // Console.WriteLine("Inverse Matrix: " + string.Join(", ", key));
             return key;
         }
 
