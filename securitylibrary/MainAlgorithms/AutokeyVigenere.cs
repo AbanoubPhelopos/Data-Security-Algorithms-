@@ -10,7 +10,38 @@ namespace SecurityLibrary
     {
         public string Analyse(string plainText, string cipherText)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            plainText = plainText.ToLower();
+            cipherText = cipherText.ToLower();
+
+            string key = "";
+
+            foreach (var pair in plainText.Zip(cipherText, (letter_PL, letter_CI) => (letter_PL, letter_CI)))
+            {
+                int pos = (pair.letter_CI - pair.letter_PL + 26) % 26;
+                key += (char)('a' + pos);
+            }
+
+            int maxK = Math.Min(key.Length, plainText.Length);
+            for (int k = maxK; k >= 0; k--)
+            {
+                if (k == 0)
+                {
+                    break;
+                }
+                if (key.Length < k || plainText.Length < k)
+                    continue;
+                string key_Suffix = key.Substring(key.Length - k);
+                string plain_Prefix = plainText.Substring(0, k);
+                if (key_Suffix == plain_Prefix)
+                {
+                    key = key.Substring(0, key.Length - k);
+                    break;
+                }
+            }
+
+            return key;
         }
 
         public string Decrypt(string cipherText, string key)
