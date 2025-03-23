@@ -13,7 +13,7 @@ namespace SecurityLibrary.DES
         {
             // throw new NotImplementedException();
             string plaintext = null;
-            plaintext = des.Decrypt(cipherText, key[2]);
+            plaintext = des.Decrypt(cipherText, key[0]);
             plaintext = des.Encrypt(plaintext, key[1]);
             plaintext = des.Decrypt(plaintext, key[0]);
             return plaintext;
@@ -25,7 +25,7 @@ namespace SecurityLibrary.DES
             string cipheredtext = null;
             cipheredtext = des.Encrypt(plainText, key[0]);
             cipheredtext = des.Decrypt(cipheredtext, key[1]);
-            cipheredtext = des.Encrypt(cipheredtext, key[2]);
+            cipheredtext = des.Encrypt(cipheredtext, key[0]);
             return cipheredtext;
         }
 
