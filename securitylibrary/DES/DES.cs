@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -120,8 +120,49 @@ namespace SecurityLibrary.DES
 
         public override string Decrypt(string cipherText, string key)
         {
-            throw new NotImplementedException();
+            string cipherTextBinary = "";
+            for (int i = 2; i < cipherText.Length; i++)
+            {
+                cipherTextBinary += hexToBinaryMap[cipherText[i]];
+            }
+
+            string plainText = "";
+            string key56Bit = transformKey(key);
+            Console.WriteLine("56BitKey: " + key56Bit);
+
+            List<string> subKeys = getSubKey(key56Bit);
+            subKeys.Reverse(); // Reverse the subkeys for decryption
+
+            string txtAfterIP = ApplyPermutation(cipherTextBinary, IP);
+
+            string left = txtAfterIP.Substring(0, 32);
+            string right = txtAfterIP.Substring(32, 32);
+
+            for (int i = 0; i < 16; i++)
+            {
+                string temp = right;
+                right = xor(left, Mangler(right, subKeys[i]));
+                left = temp;
+            }
+
+            string concat = right + left;
+            plainText = ApplyPermutation(concat, IP_inv);
+
+            StringBuilder ans = new StringBuilder(cipherText.Length);
+            ans.Append("0x");
+            for (int i = 0; i < plainText.Length; i += 4)
+            {
+                string block = plainText.Substring(i, 4);
+                ans.Append(binaryToHexMap[block]);
+            }
+
+            Console.WriteLine($"Decrypted text : {ans.ToString()}");
+            return ans.ToString();
+
         }
+
+
+     //***********************************************************************************************************************************\\
 
         public override string Encrypt(string plainText, string key)
         {
@@ -190,6 +231,7 @@ namespace SecurityLibrary.DES
             return ans.ToString();
         }
 
+    //***********************************************************************************************************************************\\
         public string transformKey(string key)
         {
 
@@ -222,6 +264,7 @@ namespace SecurityLibrary.DES
 
             return key56Bit;
         }
+
         public List<string> getSubKey(string key56Bit)
         {
             List<string> subKeys = new List<string>();
@@ -264,6 +307,16 @@ namespace SecurityLibrary.DES
             return subKeys;
         }
 
+        private string ApplyPermutation(string text, int[] permutation)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < permutation.Length; i++)
+            {
+                sb.Append(text[permutation[i] - 1]);
+            }
+            return sb.ToString();
+        }
+
         private string Mangler(string right, string key)
         {
             string expandedRight = expansion(right);
@@ -284,22 +337,6 @@ namespace SecurityLibrary.DES
         /*
             yousef ->> Yousif
          */
-
-        private string sboxSubstitution(string txt)
-        {
-            StringBuilder res = new StringBuilder(32);
-            for (int i = 0; i < 8; i++)
-            {
-                string block = txt.Substring(i * 6, 6);
-                string Srow = block[0].ToString() + block[5].ToString();
-                int row = Convert.ToInt32(Srow, 2);
-                string Scol = block.Substring(1, 4);
-                int col = Convert.ToInt32(Scol, 2);
-                int value = sbox[i, row, col];
-                res.Append(Convert.ToString(value, 2).PadLeft(4, '0'));
-            }
-            return ApplyPermutation(res.ToString(), P_Table);
-        }
 
         private string expansion(string right)
         {
@@ -328,14 +365,21 @@ namespace SecurityLibrary.DES
             }
             return sb.ToString();
         }
-        private string ApplyPermutation(string text, int[] permutation)
+
+        private string sboxSubstitution(string txt)
         {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < permutation.Length; i++)
+            StringBuilder res = new StringBuilder(32);
+            for (int i = 0; i < 8; i++)
             {
-                sb.Append(text[permutation[i] - 1]);
+                string block = txt.Substring(i * 6, 6);
+                string Srow = block[0].ToString() + block[5].ToString();
+                int row = Convert.ToInt32(Srow, 2);
+                string Scol = block.Substring(1, 4);
+                int col = Convert.ToInt32(Scol, 2);
+                int value = sbox[i, row, col];
+                res.Append(Convert.ToString(value, 2).PadLeft(4, '0'));
             }
-            return sb.ToString();
+            return ApplyPermutation(res.ToString(), P_Table);
         }
     }
 }
