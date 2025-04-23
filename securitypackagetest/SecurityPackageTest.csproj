@@ -61,6 +61,7 @@
     <Compile Include="HillCipherTest.cs" />
     <Compile Include="RailFenceTest.cs" />
     <Compile Include="VignereTest.cs" />
+    <Compile Include="AESTest.cs" />
     <Compile Include="AESTest.cs"/>
     <Compile Include="DeffieHelmanTest.cs"/>
     <Compile Include="ElGamalTest.cs"/>
