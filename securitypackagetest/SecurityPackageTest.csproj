@@ -60,6 +60,7 @@
     <Compile Include="HillCipherTest.cs" />
     <Compile Include="RailFenceTest.cs" />
     <Compile Include="VignereTest.cs" />
+    <Compile Include="AESTest.cs" />
 
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
