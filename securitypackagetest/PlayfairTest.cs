@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecurityLibrary;
+using System.Linq;
 
 namespace SecurityPackageTest
 {
@@ -105,11 +106,11 @@ namespace SecurityPackageTest
         public void PlayfairTestBonusAnalysis()
         {
             PlayFair algorithm = new PlayFair();
-            /*string plain = algorithm.Analyse(largeCipher);
+            string plain = algorithm.Analyse(largeCipher);
             int count = Enumerable.Range(0, largePlainForAnlysis.Length)
               .Count(i => largePlainForAnlysis[i] == plain[i]);
 
-            Assert.IsTrue(count * 100 / largePlain.Length > 50);*/
+            Assert.IsTrue(count * 100 / largePlain.Length > 50);
         }
 
         [TestMethod]

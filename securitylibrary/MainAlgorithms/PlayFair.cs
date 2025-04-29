@@ -287,5 +287,9 @@ namespace SecurityLibrary
             return (-1, -1);
         }
 
+        public string Analyse(string largeCipher)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
